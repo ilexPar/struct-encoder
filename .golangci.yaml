@@ -1,0 +1,92 @@
+version: "2"
+
+run:
+  timeout: 5m
+  tests: true
+
+output:
+  formats:
+    html:
+      # Output path can be either `stdout`, `stderr` or path to the file to write to.
+      # Default: stdout
+      path: ./analysis-report.html
+  show-stats: false
+
+linters:
+  default: none
+  enable:
+    # Default Go linters
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+
+    # Additional useful linters
+    - misspell
+    - lll
+    - goconst
+    - gocyclo
+    - gosec
+    - gocritic
+
+  settings:
+    errcheck:
+      check-type-assertions: true
+      check-blank: true
+
+    govet:
+      enable:
+        - shadow
+
+    lll:
+      line-length: 120
+
+    misspell:
+      locale: US
+
+    staticcheck:
+      checks:
+        - -ST1006
+
+    # Gocyclo: cyclomatic complexity
+    gocyclo:
+      # Minimal code complexity to report.
+      min-complexity: 10
+
+  exclusions:
+    rules:
+      # Relax rules for test files
+      - path: _test\.go
+        linters:
+          - errcheck
+          - gosec
+          - lll
+
+formatters:
+  enable:
+    - golines
+    - swaggo
+    - goimports
+  settings:
+    golines:
+      max-len: 120
+      shorten-comments: true
+
+    goimports:
+      # A list of prefixes, which, if set, checks import paths
+      # with the given prefixes are grouped after 3rd-party packages.
+      # Default: []
+      local-prefixes:
+        - github.com/ilexPar/struct-marshal/
+
+issues:
+  fix: true
+  # Don't hide multiple issues on the same line
+  max-same-issues: 0
+  # exclude-dirs:
+  #   - vendor
+  #   - third_party
+  # exclude-files:
+  #   - ".*\\.pb\\.go$"
+  #   - ".*\\.gen\\.go$"
